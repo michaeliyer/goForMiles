@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎧 Go For Miles</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎧 Go For Miles</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>🎷 Go For Miles</h1>
+      <div id="album-controls">
+        <button id="newAlbumBtn">+ New Album</button>
+        <select id="albumSelect"></select>
+        <input
+          type="file"
+          id="fileInput"
+          multiple
+          accept="audio/*,video/*"
+          hidden
+        />
+        <button id="uploadBtn">📁 Add Tracks</button>
+      </div>
 
-  <header>
-    <h1>🎷 Go For Miles</h1>
-    <div id="album-controls">
-      <button id="newAlbumBtn">+ New Album</button>
-      <select id="albumSelect"></select>
-      <input type="file" id="fileInput" multiple accept="audio/*,video/*" hidden />
-      <button id="uploadBtn">📁 Add Tracks</button>
-    </div>
-
-    <div id="bgModeSelector">
+      <div id="bgModeSelector">
         <label>Background:</label>
         <select id="bgMode">
           <option value="video">🎬 Video</option>
@@ -36,37 +41,35 @@
         <label for="colorPicker">🎨 Choose Background Color:</label>
         <input type="color" id="colorPicker" value="#111111" />
       </div>
+    </header>
 
-  </header>
+    <div id="bgToggle">
+      <button id="toggleBgBtn">🎬 Switch to Still</button>
+    </div>
 
-  <div id="bgToggle">
-    <button id="toggleBgBtn">🎬 Switch to Still</button>
-  </div>
-  
-  <!-- Add both background options -->
-  <video id="backgroundVideo" autoplay muted loop>
-    <!-- <source src="assets/milesLoop.mp4" type="video/mp4" /> -->
-    <source src="" type="video/mp4" />
-  </video>
+    <!-- Add both background options -->
+    <video id="backgroundVideo" autoplay muted loop>
+      <!-- <source src="assets/milesLoop.mp4" type="video/mp4" /> -->
+      <source src="" type="video/mp4" />
+    </video>
 
+    <main>
+      <section id="trackList"></section>
+      <section id="playerSection" class="hidden">
+        <h2 id="nowPlaying">Now Playing</h2>
+        <video id="mediaElement" controls></video>
+        <canvas id="visualizer" height="60"></canvas>
+        <div id="playerControls">
+          <button id="playBtn">▶️</button>
+          <button id="repeatBtn">🔁</button>
+          <input type="range" id="seekBar" value="0" />
+        </div>
+      </section>
+    </main>
 
-  <main>
-    <section id="trackList"></section>
-    <section id="playerSection" class="hidden">
-      <h2 id="nowPlaying">Now Playing</h2>
-      <video id="mediaElement" controls></video>
-      <canvas id="visualizer" height="60"></canvas>
-      <div id="playerControls">
-        <button id="playBtn">▶️</button>
-        <button id="repeatBtn">🔁</button>
-        <input type="range" id="seekBar" value="0" />
-      </div>
-    </section>
-  </main>
-
-  <script src="config.js"></script>
-  <script src="db.js"></script>
-  <script type="module" src="script.js"></script>
-  <!-- <script src="script.js"></script> -->
-</body>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <script type="module" src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
+  </body>
 </html>

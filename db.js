@@ -35,8 +35,8 @@ export function saveAlbum(name, trackList) {
         name: t.name,
         file: t.file,
         type: t.file.type,
-        added: Date.now()
-      }))
+        added: Date.now(),
+      })),
     };
 
     const request = store.put(data);
@@ -59,4 +59,36 @@ export function loadAllAlbums() {
     };
     request.onerror = (e) => reject(e);
   });
+}
+
+const DB_NAME = "visualizerMediaDB";
+const DB_STORE = "backgrounds";
+
+export async function initMediaDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(DB_STORE)) {
+        db.createObjectStore(DB_STORE);
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function saveCustomVideo(file) {
+  const db = await initMediaDB();
+  const tx = db.transaction(DB_STORE, "readwrite");
+  tx.objectStore(DB_STORE).put(file, "customVideo");
+  return tx.complete;
+}
+
+export async function loadCustomVideo() {
+  const db = await initMediaDB();
+  const tx = db.transaction(DB_STORE, "readonly");
+  return tx.objectStore(DB_STORE).get("customVideo");
 }
