@@ -72,3 +72,63 @@ export class ProgressTracker {
     this.callbacks.push(callback);
   }
 }
+
+// Dropbox Integration
+export async function fetchDropboxFile(dropboxUrl) {
+  try {
+    // Convert shared link to direct download link
+    const directUrl = dropboxUrl.replace(
+      "www.dropbox.com",
+      "dl.dropboxusercontent.com"
+    );
+
+    const response = await fetch(directUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    return blob;
+  } catch (error) {
+    console.error("Error fetching Dropbox file:", error);
+    throw new Error("Failed to fetch media file from Dropbox");
+  }
+}
+
+export function createMediaElement(blob, type) {
+  const url = URL.createObjectURL(blob);
+  let element;
+
+  if (type.startsWith("audio/")) {
+    element = new Audio(url);
+  } else if (type.startsWith("video/")) {
+    element = document.createElement("video");
+    element.src = url;
+  } else {
+    throw new Error("Unsupported media type");
+  }
+
+  return { element, url };
+}
+
+export function validateDropboxUrl(url) {
+  try {
+    const dropboxUrl = new URL(url);
+    return dropboxUrl.hostname.includes("dropbox.com");
+  } catch {
+    return false;
+  }
+}
+
+// CORS Error Handling
+export function handleCorsError(error) {
+  if (
+    error.message.includes("Failed to fetch") ||
+    error.message.includes("CORS")
+  ) {
+    throw new Error(
+      "CORS error: Unable to access the media file. Please ensure the Dropbox link is properly shared."
+    );
+  }
+  throw error;
+}

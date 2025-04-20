@@ -4,6 +4,10 @@ import {
   cleanupObjectURL,
   ProgressTracker,
   handleStorageError,
+  fetchDropboxFile,
+  createMediaElement,
+  validateDropboxUrl,
+  handleCorsError,
 } from "./utils.js";
 
 // === DOM ELEMENTS ===
@@ -132,6 +136,37 @@ function renderTracks(album) {
   });
 }
 
+async function addTrackToAlbum(album, fileOrUrl, name) {
+  try {
+    let file;
+    let type;
+
+    if (typeof fileOrUrl === "string" && validateDropboxUrl(fileOrUrl)) {
+      // Handle Dropbox URL
+      const blob = await fetchDropboxFile(fileOrUrl);
+      type = blob.type;
+      file = new File([blob], name || "dropbox-media", { type });
+    } else if (fileOrUrl instanceof File) {
+      // Handle local file
+      file = fileOrUrl;
+      type = file.type;
+    } else {
+      throw new Error("Invalid file or URL");
+    }
+
+    if (!type.startsWith("audio/") && !type.startsWith("video/")) {
+      throw new Error("Unsupported file type");
+    }
+
+    tracks[album].push({ name: file.name, file, type });
+    await saveAlbum(album, tracks[album]);
+    renderTracks(album);
+  } catch (error) {
+    handleCorsError(error);
+    showError(error.message);
+  }
+}
+
 // === EVENT HANDLERS ===
 uploadBtn.addEventListener("click", () => {
   if (!currentAlbum) {
@@ -144,26 +179,14 @@ uploadBtn.addEventListener("click", () => {
 fileInput.addEventListener("change", async (e) => {
   try {
     const files = Array.from(e.target.files);
-    const validFiles = files.filter(
-      (file) => file.type.startsWith("audio/") || file.type.startsWith("video/")
-    );
-
-    if (validFiles.length === 0) {
-      showError("No valid audio or video files selected.");
-      return;
-    }
-
-    const progressTracker = new ProgressTracker(validFiles.length);
+    const progressTracker = new ProgressTracker(files.length);
     progressTracker.onProgress(updateProgress);
 
-    for (let i = 0; i < validFiles.length; i++) {
-      const file = validFiles[i];
-      tracks[currentAlbum].push({ name: file.name, file });
+    for (let i = 0; i < files.length; i++) {
+      await addTrackToAlbum(currentAlbum, files[i]);
       progressTracker.update(i + 1);
     }
 
-    await saveAlbum(currentAlbum, tracks[currentAlbum]);
-    renderTracks(currentAlbum);
     fileInput.value = "";
   } catch (error) {
     showError("Error uploading files: " + error.message);
@@ -386,3 +409,40 @@ videoUploader.addEventListener("change", (e) => {
     bgModeSelect.value = "video";
   }
 });
+
+// Add Dropbox URL input
+const dropboxInput = document.createElement("input");
+dropboxInput.type = "text";
+dropboxInput.placeholder = "Paste Dropbox URL here";
+dropboxInput.className = "dropbox-input";
+
+const addDropboxBtn = document.createElement("button");
+addDropboxBtn.textContent = "Add Dropbox Media";
+addDropboxBtn.className = "dropbox-btn";
+
+addDropboxBtn.addEventListener("click", async () => {
+  const url = dropboxInput.value.trim();
+  if (!url) {
+    showError("Please enter a Dropbox URL");
+    return;
+  }
+
+  if (!validateDropboxUrl(url)) {
+    showError("Invalid Dropbox URL");
+    return;
+  }
+
+  try {
+    await addTrackToAlbum(currentAlbum, url);
+    dropboxInput.value = "";
+  } catch (error) {
+    showError(error.message);
+  }
+});
+
+// Add Dropbox controls to the UI
+const dropboxContainer = document.createElement("div");
+dropboxContainer.className = "dropbox-container";
+dropboxContainer.appendChild(dropboxInput);
+dropboxContainer.appendChild(addDropboxBtn);
+document.querySelector("#album-controls").appendChild(dropboxContainer);

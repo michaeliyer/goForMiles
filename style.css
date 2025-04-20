@@ -296,3 +296,54 @@ main {
     opacity: 0;
   }
 }
+
+/* Dropbox Controls */
+.dropbox-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+.dropbox-input {
+  flex: 1;
+  padding: 0.5rem;
+  background: #222;
+  color: #f0f0f0;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.dropbox-input:focus {
+  outline: none;
+  border-color: #fcee09;
+}
+
+.dropbox-btn {
+  background: #222;
+  color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropbox-btn:hover {
+  background: #444;
+  transform: scale(1.05);
+}
+
+/* Media Loading States */
+.media-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.media-error {
+  border: 2px solid red;
+}
