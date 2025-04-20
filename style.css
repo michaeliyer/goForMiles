@@ -1,0 +1,199 @@
+/* GLOBAL STYLES */
+body {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #0e0e0e;
+    color: #f0f0f0;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+/* Background image via pseudo-element */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('assets/milesStill.jpg') center center / cover no-repeat;
+    opacity: 0.25;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  
+  video#backgroundVideo {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.2;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  
+  body.still-mode #backgroundVideo {
+    opacity: 0;
+  }
+  
+  body.still-mode::before {
+    opacity: 0.3;
+  }
+  
+  /* HEADER */
+  header {
+    padding: 1rem;
+    background: #111;
+    border-bottom: 2px solid #444;
+    text-align: center;
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #fcee09;
+    letter-spacing: 2px;
+  }
+  
+  #album-controls {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  #album-controls button,
+  #album-controls select {
+    background: #222;
+    color: #f0f0f0;
+    padding: 0.5rem 1rem;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  #album-controls button:hover {
+    background: #444;
+    transform: scale(1.05);
+  }
+  
+  /* MAIN TRACK LIST */
+  main {
+    padding: 2rem;
+  }
+  
+  #trackList {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  
+  .track-item {
+    background: #1a1a1a;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    position: relative;
+    transition: 0.3s ease;
+  }
+  
+  .track-item:hover {
+    background: #2a2a2a;
+    border-color: #666;
+  }
+  
+  .track-item h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: #fff;
+  }
+  
+  .track-item .track-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .track-item button {
+    background: none;
+    border: none;
+    color: #f0f0f0;
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+  
+  .track-item button:hover {
+    color: #fcee09;
+  }
+  
+  /* PLAYER SECTION */
+  #playerSection {
+    margin-top: 3rem;
+    background: #111;
+    padding: 1rem;
+    border-top: 2px solid #333;
+    text-align: center;
+  }
+  
+  #nowPlaying {
+    color: #fcee09;
+    margin-bottom: 1rem;
+  }
+  
+  #mediaElement {
+    max-width: 90%;
+    max-height: 300px;
+    margin: 0 auto;
+    display: block;
+    background: black;
+  }
+  
+  #visualizer {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    height: 60px;
+    margin: 1rem auto;
+    background: black;
+    border: 1px solid #333;
+    border-radius: 4px;
+  }
+  
+  #playerControls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  #playerControls button {
+    background: #222;
+    color: #fcee09;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  #playerControls button:hover {
+    background: #333;
+    transform: scale(1.1);
+  }
+  
+  #seekBar {
+    width: 50%;
+    height: 6px;
+    background: #444;
+  }
+  
+  /* HIDDEN ELEMENTS */
+  .hidden {
+    display: none;
+  }
