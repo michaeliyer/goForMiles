@@ -24,6 +24,27 @@
       <input type="file" id="fileInput" multiple accept="audio/*,video/*" hidden />
       <button id="uploadBtn">📁 Add Tracks</button>
     </div>
+
+    <div id="bgModeSelector">
+        <label>Background:</label>
+        <select id="bgMode">
+          <option value="video">🎬 Video</option>
+          <option value="image">🖼️ Image</option>
+          <option value="color">🎨 Color</option>
+        </select>
+      </div>
+
+      <div id="customBgControls">
+        <label>🖼️ Custom Background:</label>
+        <input type="file" id="imageUploader" accept="image/*" />
+        <input type="file" id="videoUploader" accept="video/*" />
+      </div>
+
+      <div id="colorPickerContainer">
+        <label for="colorPicker">🎨 Choose Background Color:</label>
+        <input type="color" id="colorPicker" value="#111111" />
+      </div>
+
   </header>
 
   <div id="bgToggle">

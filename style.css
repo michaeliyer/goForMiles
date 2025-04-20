@@ -15,7 +15,7 @@ body::before {
     top: 0; left: 0;
     width: 100vw;
     height: 100vh;
-    background: url('assets/milesStill.jpg') center center / cover no-repeat;
+    background: var(--custom-image, url('assets/milesStill.jpg')) center center / cover no-repeat;
     opacity: 0.25;
     z-index: -1;
     pointer-events: none;
@@ -41,7 +41,46 @@ body::before {
   body.still-mode::before {
     opacity: 0.3;
   }
+
+  body.color-mode {
+    background-color: #111;
+  }
   
+  body.color-mode::before,
+  body.color-mode #backgroundVideo {
+    display: none !important;
+  }
+
+  body.video-mode::before,
+  body.color-mode::before {
+  opacity: 0;
+}
+
+body.video-mode #backgroundVideo {
+  opacity: 0.25;
+}
+
+body.image-mode::before {
+  opacity: 0.3;
+}
+
+body.image-mode #backgroundVideo {
+  opacity: 0;
+}
+
+#colorPickerContainer {
+    display: none;
+    margin-left: 1rem;
+  }
+  
+  body.color-mode #colorPickerContainer {
+    display: inline-block;
+  }
+  
+  body.color-mode {
+    background-color: var(--bg-color, #111);
+  }
+
   /* HEADER */
   header {
     padding: 1rem;
