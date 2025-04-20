@@ -202,84 +202,170 @@ albumSelect.addEventListener("change", () => {
   currentAlbum = albumSelect.value;
   renderTracks(currentAlbum);
 });
-window.addEventListener("DOMContentLoaded", async () => {
-    await initDB();
-    const albums = await loadAllAlbums();
-    albums.forEach((album) => {
-      tracks[album.name] = album.tracks;
-      const option = document.createElement("option");
-      option.value = album.name;
-      option.textContent = album.name;
-      albumSelect.appendChild(option);
-    });
+// window.addEventListener("DOMContentLoaded", async () => {
+//     await initDB();
+//     const albums = await loadAllAlbums();
+//     albums.forEach((album) => {
+//       tracks[album.name] = album.tracks;
+//       const option = document.createElement("option");
+//       option.value = album.name;
+//       option.textContent = album.name;
+//       albumSelect.appendChild(option);
+//     });
   
-    if (albums.length) {
-      currentAlbum = albums[0].name;
-      albumSelect.value = currentAlbum;
-      renderTracks(currentAlbum);
-    }
+//     if (albums.length) {
+//       currentAlbum = albums[0].name;
+//       albumSelect.value = currentAlbum;
+//       renderTracks(currentAlbum);
+//     }
   
-    // === BACKGROUND MODE LOAD + SELECT ===
-    const bgModeSelect = document.getElementById("bgMode");
-    const savedMode = localStorage.getItem("bgMode") || "video";
-    document.body.classList.add(`${savedMode}-mode`);
-    bgModeSelect.value = savedMode;
+//     // === BACKGROUND MODE LOAD + SELECT ===
+//     const bgModeSelect = document.getElementById("bgMode");
+//     const savedMode = localStorage.getItem("bgMode") || "video";
+//     document.body.classList.add(`${savedMode}-mode`);
+//     bgModeSelect.value = savedMode;
   
-    bgModeSelect.addEventListener("change", () => {
-      document.body.classList.remove("video-mode", "image-mode", "color-mode");
-      const mode = bgModeSelect.value;
-      document.body.classList.add(`${mode}-mode`);
-      localStorage.setItem("bgMode", mode);
-    });
+//     bgModeSelect.addEventListener("change", () => {
+//       document.body.classList.remove("video-mode", "image-mode", "color-mode");
+//       const mode = bgModeSelect.value;
+//       document.body.classList.add(`${mode}-mode`);
+//       localStorage.setItem("bgMode", mode);
+//     });
   
-    // === COLOR PICKER ===
-    const colorPicker = document.getElementById("colorPicker");
-    const savedColor = localStorage.getItem("bgColor") || "#111111";
-    document.documentElement.style.setProperty("--bg-color", savedColor);
-    colorPicker.value = savedColor;
+//     // === COLOR PICKER ===
+//     const colorPicker = document.getElementById("colorPicker");
+//     const savedColor = localStorage.getItem("bgColor") || "#111111";
+//     document.documentElement.style.setProperty("--bg-color", savedColor);
+//     colorPicker.value = savedColor;
   
-    colorPicker.addEventListener("input", () => {
-      const color = colorPicker.value;
-      document.documentElement.style.setProperty("--bg-color", color);
-      localStorage.setItem("bgColor", color);
-    });
+//     colorPicker.addEventListener("input", () => {
+//       const color = colorPicker.value;
+//       document.documentElement.style.setProperty("--bg-color", color);
+//       localStorage.setItem("bgColor", color);
+//     });
 
-    // === IMAGE UPLOAD ===
-    const imageUploader = document.getElementById("imageUploader");
-    const bgStyle = document.body.style;
+//     // === IMAGE UPLOAD ===
+//     const imageUploader = document.getElementById("imageUploader");
+//     const bgStyle = document.body.style;
 
-    imageUploader.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const url = URL.createObjectURL(file);
-        bgStyle.setProperty("--custom-image", `url('${url}')`);
-        localStorage.setItem("customImage", url);
-        document.body.classList.add("image-mode");
-        bgModeSelect.value = "image";
-    }
-    });
+//     imageUploader.addEventListener("change", (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//         const url = URL.createObjectURL(file);
+//         bgStyle.setProperty("--custom-image", `url('${url}')`);
+//         localStorage.setItem("customImage", url);
+//         document.body.classList.add("image-mode");
+//         bgModeSelect.value = "image";
+//     }
+//     });
 
-    // === VIDEO UPLOAD ===
-    const videoUploader = document.getElementById("videoUploader");
-    const bgVideo = document.getElementById("backgroundVideo");
+//     // === VIDEO UPLOAD ===
+//     const videoUploader = document.getElementById("videoUploader");
+//     const bgVideo = document.getElementById("backgroundVideo");
 
-    videoUploader.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const url = URL.createObjectURL(file);
-        bgVideo.src = url;
-        localStorage.setItem("customVideo", url);
-        document.body.classList.add("video-mode");
-        bgModeSelect.value = "video";
-    }
-    });
-    const storedImage = localStorage.getItem("customImage");
-    const storedVideo = localStorage.getItem("customVideo");
+//     videoUploader.addEventListener("change", (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//         const url = URL.createObjectURL(file);
+//         bgVideo.src = url;
+//         localStorage.setItem("customVideo", url);
+//         document.body.classList.add("video-mode");
+//         bgModeSelect.value = "video";
+//     }
+//     });
+//     const storedImage = localStorage.getItem("customImage");
+//     const storedVideo = localStorage.getItem("customVideo");
 
-    if (storedImage) {
+//     if (storedImage) {
+//     bgStyle.setProperty("--custom-image", `url('${storedImage}')`);
+//     }
+//     if (storedVideo) {
+//     document.getElementById("backgroundVideo").src = storedVideo;
+//     }
+//   });window.addEventListener("DOMContentLoaded", async () => {
+  await initDB();
+  const albums = await loadAllAlbums();
+  albums.forEach((album) => {
+    tracks[album.name] = album.tracks;
+    const option = document.createElement("option");
+    option.value = album.name;
+    option.textContent = album.name;
+    albumSelect.appendChild(option);
+  });
+
+  if (albums.length) {
+    currentAlbum = albums[0].name;
+    albumSelect.value = currentAlbum;
+    renderTracks(currentAlbum);
+  }
+
+  // === BACKGROUND MODE LOAD + SELECT ===
+  const bgModeSelect = document.getElementById("bgMode");
+  const savedMode = localStorage.getItem("bgMode") || "video";
+  document.body.classList.add(`${savedMode}-mode`);
+  bgModeSelect.value = savedMode;
+
+  bgModeSelect.addEventListener("change", () => {
+    document.body.classList.remove("video-mode", "image-mode", "color-mode");
+    const mode = bgModeSelect.value;
+    document.body.classList.add(`${mode}-mode`);
+    localStorage.setItem("bgMode", mode);
+  });
+
+  // === COLOR PICKER ===
+  const colorPicker = document.getElementById("colorPicker");
+  const savedColor = localStorage.getItem("bgColor") || "#111111";
+  document.documentElement.style.setProperty("--bg-color", savedColor);
+  colorPicker.value = savedColor;
+
+  colorPicker.addEventListener("input", () => {
+    const color = colorPicker.value;
+    document.documentElement.style.setProperty("--bg-color", color);
+    localStorage.setItem("bgColor", color);
+  });
+
+  // === IMAGE UPLOAD ===
+  const imageUploader = document.getElementById("imageUploader");
+  const bgStyle = document.body.style;
+
+  const storedImage = localStorage.getItem("customImage");
+  if (storedImage) {
     bgStyle.setProperty("--custom-image", `url('${storedImage}')`);
+  }
+
+  imageUploader.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      bgStyle.setProperty("--custom-image", `url('${url}')`);
+      localStorage.setItem("customImage", url);
+      document.body.classList.add("image-mode");
+      bgModeSelect.value = "image";
     }
-    if (storedVideo) {
-    document.getElementById("backgroundVideo").src = storedVideo;
+  });
+
+  // === VIDEO UPLOAD ===
+  const videoUploader = document.getElementById("videoUploader");
+  const bgVideo = document.getElementById("backgroundVideo");
+
+  const storedVideo = localStorage.getItem("customVideo");
+  if (storedVideo) {
+    bgVideo.src = storedVideo;
+    bgVideo.load();
+    bgVideo.play();
+  }
+
+  videoUploader.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      bgVideo.src = url;
+      bgVideo.load();
+      bgVideo.play();
+      localStorage.setItem("customVideo", url);
+
+      document.body.classList.remove("image-mode", "color-mode");
+      document.body.classList.add("video-mode");
+      bgModeSelect.value = "video";
     }
   });
