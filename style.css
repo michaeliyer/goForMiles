@@ -1,58 +1,61 @@
 /* GLOBAL STYLES */
 body {
-    margin: 0;
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #0e0e0e;
-    color: #f0f0f0;
-    overflow-x: hidden;
-    position: relative;
-  }
-  
+  margin: 0;
+  font-family: "Courier New", Courier, monospace;
+  background-color: #0e0e0e;
+  color: #f0f0f0;
+  overflow-x: hidden;
+  position: relative;
+}
+
 /* Background image via pseudo-element */
 body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: var(--custom-image, url('assets/milesStill.jpg')) center center / cover no-repeat;
-    opacity: 0.25;
-    z-index: -1;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-  }
-  
-  video#backgroundVideo {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-    opacity: 0.2;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-  }
-  
-  body.still-mode #backgroundVideo {
-    opacity: 0;
-  }
-  
-  body.still-mode::before {
-    opacity: 0.3;
-  }
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--custom-image, url("assets/milesStill.jpg")) center center /
+    cover no-repeat;
+  opacity: 0.25;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
 
-  body.color-mode {
-    background-color: #111;
-  }
-  
-  body.color-mode::before,
-  body.color-mode #backgroundVideo {
-    display: none !important;
-  }
+video#backgroundVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.2;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
 
-  body.video-mode::before,
-  body.color-mode::before {
+body.still-mode #backgroundVideo {
+  opacity: 0;
+}
+
+body.still-mode::before {
+  opacity: 0.3;
+}
+
+body.color-mode {
+  background-color: #111;
+}
+
+body.color-mode::before,
+body.color-mode #backgroundVideo {
+  display: none !important;
+}
+
+body.video-mode::before,
+body.color-mode::before {
   opacity: 0;
 }
 
@@ -69,170 +72,227 @@ body.image-mode #backgroundVideo {
 }
 
 #colorPickerContainer {
-    display: none;
-    margin-left: 1rem;
-  }
-  
-  body.color-mode #colorPickerContainer {
-    display: inline-block;
-  }
-  
-  body.color-mode {
-    background-color: var(--bg-color, #111);
-  }
+  display: none;
+  margin-left: 1rem;
+}
 
-  /* HEADER */
-  header {
-    padding: 1rem;
-    background: #111;
-    border-bottom: 2px solid #444;
-    text-align: center;
+body.color-mode #colorPickerContainer {
+  display: inline-block;
+}
+
+body.color-mode {
+  background-color: var(--bg-color, #111);
+}
+
+/* HEADER */
+header {
+  padding: 1rem;
+  background: #111;
+  border-bottom: 2px solid #444;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #fcee09;
+  letter-spacing: 2px;
+}
+
+#album-controls {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+#album-controls button,
+#album-controls select {
+  background: #222;
+  color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+#album-controls button:hover {
+  background: #444;
+  transform: scale(1.05);
+}
+
+/* MAIN TRACK LIST */
+main {
+  padding: 2rem;
+}
+
+#trackList {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.track-item {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.track-item:hover {
+  background: #2a2a2a;
+  border-color: #666;
+  transform: translateY(-2px);
+}
+
+.track-item h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.track-item .track-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.track-item button {
+  background: none;
+  border: none;
+  color: #f0f0f0;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.track-item button:hover {
+  color: #fcee09;
+  transform: scale(1.1);
+}
+
+/* PLAYER SECTION */
+#playerSection {
+  margin-top: 3rem;
+  background: #111;
+  padding: 1rem;
+  border-top: 2px solid #333;
+  text-align: center;
+}
+
+#nowPlaying {
+  color: #fcee09;
+  margin-bottom: 1rem;
+}
+
+#mediaElement {
+  max-width: 90%;
+  max-height: 300px;
+  margin: 0 auto;
+  display: block;
+  background: black;
+}
+
+#visualizer {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: 60px;
+  margin: 1rem auto;
+  background: black;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+#playerControls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+#playerControls button {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#playerControls button:hover {
+  transform: scale(1.1);
+}
+
+#seekBar {
+  flex: 1;
+  max-width: 300px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+#seekBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #fcee09;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* HIDDEN ELEMENTS */
+.hidden {
+  display: none;
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: #fcee09;
+  transition: width 0.3s ease;
+  z-index: 1000;
+}
+
+/* Error Messages */
+.error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  animation: slideIn 0.3s ease, fadeOut 0.3s ease 4.7s;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  
-  header h1 {
-    margin: 0;
-    font-size: 2rem;
-    color: #fcee09;
-    letter-spacing: 2px;
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
-  #album-controls {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
   }
-  
-  #album-controls button,
-  #album-controls select {
-    background: #222;
-    color: #f0f0f0;
-    padding: 0.5rem 1rem;
-    border: 1px solid #555;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+  to {
+    opacity: 0;
   }
-  
-  #album-controls button:hover {
-    background: #444;
-    transform: scale(1.05);
-  }
-  
-  /* MAIN TRACK LIST */
-  main {
-    padding: 2rem;
-  }
-  
-  #trackList {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  }
-  
-  .track-item {
-    background: #1a1a1a;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #333;
-    position: relative;
-    transition: 0.3s ease;
-  }
-  
-  .track-item:hover {
-    background: #2a2a2a;
-    border-color: #666;
-  }
-  
-  .track-item h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1rem;
-    color: #fff;
-  }
-  
-  .track-item .track-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .track-item button {
-    background: none;
-    border: none;
-    color: #f0f0f0;
-    font-size: 1.25rem;
-    cursor: pointer;
-  }
-  
-  .track-item button:hover {
-    color: #fcee09;
-  }
-  
-  /* PLAYER SECTION */
-  #playerSection {
-    margin-top: 3rem;
-    background: #111;
-    padding: 1rem;
-    border-top: 2px solid #333;
-    text-align: center;
-  }
-  
-  #nowPlaying {
-    color: #fcee09;
-    margin-bottom: 1rem;
-  }
-  
-  #mediaElement {
-    max-width: 90%;
-    max-height: 300px;
-    margin: 0 auto;
-    display: block;
-    background: black;
-  }
-  
-  #visualizer {
-    display: block;
-    width: 100%;
-    max-width: 700px;
-    height: 60px;
-    margin: 1rem auto;
-    background: black;
-    border: 1px solid #333;
-    border-radius: 4px;
-  }
-  
-  #playerControls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  #playerControls button {
-    background: #222;
-    color: #fcee09;
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  #playerControls button:hover {
-    background: #333;
-    transform: scale(1.1);
-  }
-  
-  #seekBar {
-    width: 50%;
-    height: 6px;
-    background: #444;
-  }
-  
-  /* HIDDEN ELEMENTS */
-  .hidden {
-    display: none;
-  }
+}

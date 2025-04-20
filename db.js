@@ -1,3 +1,9 @@
+import {
+  validateAlbumData,
+  handleStorageError,
+  checkStorageQuota,
+} from "./utils.js";
+
 let db;
 
 export function initDB() {
@@ -8,6 +14,7 @@ export function initDB() {
       db = event.target.result;
       if (!db.objectStoreNames.contains("albums")) {
         const albumStore = db.createObjectStore("albums", { keyPath: "name" });
+        albumStore.createIndex("added", "added", { unique: false });
       }
     };
 
@@ -19,13 +26,26 @@ export function initDB() {
 
     request.onerror = function (event) {
       console.error("❌ DB error:", event.target.errorCode);
-      reject(event.target.errorCode);
+      reject(handleStorageError(event.target.error));
     };
   });
 }
 
-export function saveAlbum(name, trackList) {
-  return new Promise((resolve, reject) => {
+export async function saveAlbum(name, trackList) {
+  try {
+    // Check storage quota before saving
+    const quota = await checkStorageQuota();
+    if (quota) {
+      const estimatedSize = trackList.reduce(
+        (acc, track) => acc + track.file.size,
+        0
+      );
+      if (quota.used + estimatedSize > quota.quota * 0.9) {
+        // 90% threshold
+        throw new Error("QUOTA_EXCEEDED");
+      }
+    }
+
     const tx = db.transaction(["albums"], "readwrite");
     const store = tx.objectStore("albums");
 
@@ -39,13 +59,22 @@ export function saveAlbum(name, trackList) {
       })),
     };
 
-    const request = store.put(data);
-    request.onsuccess = () => {
-      console.log(`💾 Saved album: ${name}`);
-      resolve();
-    };
-    request.onerror = (e) => reject(e);
-  });
+    validateAlbumData(data);
+
+    return new Promise((resolve, reject) => {
+      const request = store.put(data);
+      request.onsuccess = () => {
+        console.log(`💾 Saved album: ${name}`);
+        resolve();
+      };
+      request.onerror = (e) => reject(handleStorageError(e.target.error));
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw handleStorageError(error);
+  }
 }
 
 export function loadAllAlbums() {
@@ -57,7 +86,21 @@ export function loadAllAlbums() {
     request.onsuccess = () => {
       resolve(request.result);
     };
-    request.onerror = (e) => reject(e);
+    request.onerror = (e) => reject(handleStorageError(e.target.error));
+  });
+}
+
+export async function deleteAlbum(name) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(["albums"], "readwrite");
+    const store = tx.objectStore("albums");
+    const request = store.delete(name);
+
+    request.onsuccess = () => {
+      console.log(`🗑️ Deleted album: ${name}`);
+      resolve();
+    };
+    request.onerror = (e) => reject(handleStorageError(e.target.error));
   });
 }
 
@@ -76,19 +119,32 @@ export async function initMediaDB() {
     };
 
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onerror = () => reject(handleStorageError(request.error));
   });
 }
 
 export async function saveCustomVideo(file) {
-  const db = await initMediaDB();
-  const tx = db.transaction(DB_STORE, "readwrite");
-  tx.objectStore(DB_STORE).put(file, "customVideo");
-  return tx.complete;
+  try {
+    const quota = await checkStorageQuota();
+    if (quota && quota.used + file.size > quota.quota * 0.9) {
+      throw new Error("QUOTA_EXCEEDED");
+    }
+
+    const db = await initMediaDB();
+    const tx = db.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).put(file, "customVideo");
+    return tx.complete;
+  } catch (error) {
+    throw handleStorageError(error);
+  }
 }
 
 export async function loadCustomVideo() {
-  const db = await initMediaDB();
-  const tx = db.transaction(DB_STORE, "readonly");
-  return tx.objectStore(DB_STORE).get("customVideo");
+  try {
+    const db = await initMediaDB();
+    const tx = db.transaction(DB_STORE, "readonly");
+    return tx.objectStore(DB_STORE).get("customVideo");
+  } catch (error) {
+    throw handleStorageError(error);
+  }
 }
